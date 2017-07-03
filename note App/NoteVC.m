@@ -175,7 +175,7 @@ static int totalNotes;
          selIndexPath=[NSIndexPath indexPathForRow:selIndexPath.row-1 inSection:0];
         _noteTF.text=notesNameArr[selIndexPath.row];
         [_tableView reloadData];
-        //dcskjbnljcsvhjcfsdjkvndjkgnjkdgn
+        //mmmmmm
     }
     else
     {
