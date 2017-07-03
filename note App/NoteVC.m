@@ -37,6 +37,7 @@ static int totalNotes;
     _noteTF.delegate=self;
     _tableView.delegate=self;
     _tableView.dataSource=self;
+    // this is test for pull
  
 }
 -(void)viewDidAppear:(BOOL)animated
