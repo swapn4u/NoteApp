@@ -25,7 +25,8 @@
 //    [self.window makeKeyWindow];
     [self.window makeKeyAndVisible];
     // Override point for customization after application launch.
-    return YES;
+    NSLog(@"didFinishLaunchingWithOptions");
+   return YES;
 }
 
 
