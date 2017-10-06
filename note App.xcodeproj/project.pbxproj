@@ -8,10 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E91CA9771F0A5310005A72FA /* swap.png in Resources */ = {isa = PBXBuildFile; fileRef = E91CA9761F0A5310005A72FA /* swap.png */; };
-		E91CA9791F0A54F9005A72FA /* newNote.png in Resources */ = {isa = PBXBuildFile; fileRef = E91CA9781F0A54F9005A72FA /* newNote.png */; };
-		E91CA97B1F0A5517005A72FA /* delete.png in Resources */ = {isa = PBXBuildFile; fileRef = E91CA97A1F0A5517005A72FA /* delete.png */; };
-		E91CA97D1F0A5537005A72FA /* UNexpand.png in Resources */ = {isa = PBXBuildFile; fileRef = E91CA97C1F0A5537005A72FA /* UNexpand.png */; };
-		E91CA97F1F0A554C005A72FA /* expand.png in Resources */ = {isa = PBXBuildFile; fileRef = E91CA97E1F0A554C005A72FA /* expand.png */; };
 		E93393C31F062D2800CBD781 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E93393C21F062D2700CBD781 /* main.m */; };
 		E93393C61F062D2800CBD781 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E93393C51F062D2800CBD781 /* AppDelegate.m */; };
 		E93393CE1F062D2800CBD781 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E93393CD1F062D2800CBD781 /* Assets.xcassets */; };
@@ -20,14 +16,15 @@
 		E93393DC1F062DA600CBD781 /* NoteVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = E93393DA1F062DA600CBD781 /* NoteVC.xib */; };
 		E93393E01F06422700CBD781 /* InfoCEll.m in Sources */ = {isa = PBXBuildFile; fileRef = E93393DE1F06422700CBD781 /* InfoCEll.m */; };
 		E93393E11F06422700CBD781 /* InfoCEll.xib in Resources */ = {isa = PBXBuildFile; fileRef = E93393DF1F06422700CBD781 /* InfoCEll.xib */; };
+		E96358581F839B2300E2A5B6 /* ACEDrawingView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96358511F839B2200E2A5B6 /* ACEDrawingView.m */; };
+		E96358591F839B2300E2A5B6 /* ACEDrawingLabelView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96358531F839B2200E2A5B6 /* ACEDrawingLabelView.m */; };
+		E963585A1F839B2300E2A5B6 /* ACEDrawingToolState.m in Sources */ = {isa = PBXBuildFile; fileRef = E96358541F839B2200E2A5B6 /* ACEDrawingToolState.m */; };
+		E963585B1F839B2300E2A5B6 /* ACEDrawingTools.m in Sources */ = {isa = PBXBuildFile; fileRef = E96358551F839B2200E2A5B6 /* ACEDrawingTools.m */; };
+		E96B0A5F1F878FDC00532F9F /* UIView+DropShadow.m in Sources */ = {isa = PBXBuildFile; fileRef = E96B0A5E1F878FDC00532F9F /* UIView+DropShadow.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		E91CA9761F0A5310005A72FA /* swap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = swap.png; sourceTree = "<group>"; };
-		E91CA9781F0A54F9005A72FA /* newNote.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newNote.png; sourceTree = "<group>"; };
-		E91CA97A1F0A5517005A72FA /* delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delete.png; sourceTree = "<group>"; };
-		E91CA97C1F0A5537005A72FA /* UNexpand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UNexpand.png; sourceTree = "<group>"; };
-		E91CA97E1F0A554C005A72FA /* expand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = expand.png; sourceTree = "<group>"; };
 		E93393BE1F062D2700CBD781 /* note App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "note App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93393C21F062D2700CBD781 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E93393C41F062D2800CBD781 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -41,6 +38,16 @@
 		E93393DD1F06422700CBD781 /* InfoCEll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoCEll.h; sourceTree = "<group>"; };
 		E93393DE1F06422700CBD781 /* InfoCEll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoCEll.m; sourceTree = "<group>"; };
 		E93393DF1F06422700CBD781 /* InfoCEll.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoCEll.xib; sourceTree = "<group>"; };
+		E96358501F839B2100E2A5B6 /* ACEDrawingTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACEDrawingTools.h; sourceTree = "<group>"; };
+		E96358511F839B2200E2A5B6 /* ACEDrawingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACEDrawingView.m; sourceTree = "<group>"; };
+		E96358521F839B2200E2A5B6 /* ACEDrawingLabelView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACEDrawingLabelView.h; sourceTree = "<group>"; };
+		E96358531F839B2200E2A5B6 /* ACEDrawingLabelView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACEDrawingLabelView.m; sourceTree = "<group>"; };
+		E96358541F839B2200E2A5B6 /* ACEDrawingToolState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACEDrawingToolState.m; sourceTree = "<group>"; };
+		E96358551F839B2200E2A5B6 /* ACEDrawingTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACEDrawingTools.m; sourceTree = "<group>"; };
+		E96358561F839B2300E2A5B6 /* ACEDrawingToolState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACEDrawingToolState.h; sourceTree = "<group>"; };
+		E96358571F839B2300E2A5B6 /* ACEDrawingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ACEDrawingView.h; sourceTree = "<group>"; };
+		E96B0A5D1F878FDC00532F9F /* UIView+DropShadow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+DropShadow.h"; sourceTree = "<group>"; };
+		E96B0A5E1F878FDC00532F9F /* UIView+DropShadow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+DropShadow.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,7 +80,17 @@
 		E93393C01F062D2700CBD781 /* note App */ = {
 			isa = PBXGroup;
 			children = (
+				E96358521F839B2200E2A5B6 /* ACEDrawingLabelView.h */,
+				E96358531F839B2200E2A5B6 /* ACEDrawingLabelView.m */,
+				E96358501F839B2100E2A5B6 /* ACEDrawingTools.h */,
+				E96358551F839B2200E2A5B6 /* ACEDrawingTools.m */,
+				E96358561F839B2300E2A5B6 /* ACEDrawingToolState.h */,
+				E96358541F839B2200E2A5B6 /* ACEDrawingToolState.m */,
+				E96358571F839B2300E2A5B6 /* ACEDrawingView.h */,
+				E96358511F839B2200E2A5B6 /* ACEDrawingView.m */,
 				E93393ED1F0679BE00CBD781 /* IMAGES */,
+				E96B0A5D1F878FDC00532F9F /* UIView+DropShadow.h */,
+				E96B0A5E1F878FDC00532F9F /* UIView+DropShadow.m */,
 				E93393D81F062DA600CBD781 /* NoteVC.h */,
 				E93393D91F062DA600CBD781 /* NoteVC.m */,
 				E93393DA1F062DA600CBD781 /* NoteVC.xib */,
@@ -101,11 +118,7 @@
 		E93393ED1F0679BE00CBD781 /* IMAGES */ = {
 			isa = PBXGroup;
 			children = (
-				E91CA9781F0A54F9005A72FA /* newNote.png */,
-				E91CA97A1F0A5517005A72FA /* delete.png */,
 				E91CA9761F0A5310005A72FA /* swap.png */,
-				E91CA97C1F0A5537005A72FA /* UNexpand.png */,
-				E91CA97E1F0A554C005A72FA /* expand.png */,
 			);
 			name = IMAGES;
 			sourceTree = "<group>";
@@ -173,10 +186,6 @@
 				E93393D11F062D2800CBD781 /* LaunchScreen.storyboard in Resources */,
 				E93393E11F06422700CBD781 /* InfoCEll.xib in Resources */,
 				E93393CE1F062D2800CBD781 /* Assets.xcassets in Resources */,
-				E91CA97F1F0A554C005A72FA /* expand.png in Resources */,
-				E91CA97D1F0A5537005A72FA /* UNexpand.png in Resources */,
-				E91CA9791F0A54F9005A72FA /* newNote.png in Resources */,
-				E91CA97B1F0A5517005A72FA /* delete.png in Resources */,
 				E93393DC1F062DA600CBD781 /* NoteVC.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -189,8 +198,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E93393C61F062D2800CBD781 /* AppDelegate.m in Sources */,
+				E96358591F839B2300E2A5B6 /* ACEDrawingLabelView.m in Sources */,
+				E963585B1F839B2300E2A5B6 /* ACEDrawingTools.m in Sources */,
 				E93393E01F06422700CBD781 /* InfoCEll.m in Sources */,
+				E96B0A5F1F878FDC00532F9F /* UIView+DropShadow.m in Sources */,
 				E93393DB1F062DA600CBD781 /* NoteVC.m in Sources */,
+				E963585A1F839B2300E2A5B6 /* ACEDrawingToolState.m in Sources */,
+				E96358581F839B2300E2A5B6 /* ACEDrawingView.m in Sources */,
 				E93393C31F062D2800CBD781 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -303,14 +317,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: prathamesh navghare (ZQZUJ88J4H)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
 				DEVELOPMENT_TEAM = 9LF24P7WQU;
 				INFOPLIST_FILE = "note App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.neosofttech.note-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "78a76de6-e2f9-49fc-b238-b9270fd80b21";
-				PROVISIONING_PROFILE_SPECIFIER = Development_WildCard;
+				PROVISIONING_PROFILE = "21ec413f-0c18-485b-94e1-4ea70ae3256f";
+				PROVISIONING_PROFILE_SPECIFIER = Wildcard_AdHoc_Profile;
 			};
 			name = Debug;
 		};
@@ -318,14 +333,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: prathamesh navghare (ZQZUJ88J4H)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
 				DEVELOPMENT_TEAM = 9LF24P7WQU;
 				INFOPLIST_FILE = "note App/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.neosofttech.note-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "78a76de6-e2f9-49fc-b238-b9270fd80b21";
-				PROVISIONING_PROFILE_SPECIFIER = Development_WildCard;
+				PROVISIONING_PROFILE = "21ec413f-0c18-485b-94e1-4ea70ae3256f";
+				PROVISIONING_PROFILE_SPECIFIER = Wildcard_AdHoc_Profile;
 			};
 			name = Release;
 		};

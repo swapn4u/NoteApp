@@ -7,28 +7,66 @@
 //
 
 #import "NoteVC.h"
+#import "ACEDrawingView.h"
+#import <AVFoundation/AVUtilities.h>
+#import <QuartzCore/QuartzCore.h>
 #import "InfoCEll.h"
+#import "UIView+DropShadow.h"
+#define tableXAxis -305
+#define sliderStepValue 2.0f
 static int totalNotes;
-@interface NoteVC ()
+@interface NoteVC ()<ACEDrawingViewDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
     
     NSIndexPath *selIndexPath;
     NSMutableArray *notesNameArr;
     BOOL isNotePreviewWindowOpened;
     InfoCEll *cell;
+    BOOL isNewNoting,isDeleteClick;
+    int lastQuestionStep;
+   
 }
 
 @end
 
 @implementation NoteVC
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
+    
+ 
+    
+    [_notesView DefaultShadow];
+    [_expandBtnView DefaultShadow];
+    
+    lastQuestionStep = (self.sizeSlider.value) /sliderStepValue;
+    
+    _colorViewHeight.constant=0.0f;
+    for (NSLayoutConstraint *constraint in self.colorHeight)
+        {                constraint.constant=0;
+        }
+    _sliderViewHeight.constant=0.0f;
+    _sizeSlider.hidden=YES;
+    
+    _drawingToolView.hidden=YES;
+    
+    
+    
+     self.drawingView.delegate = self;
+    for (UIView *view in [_colorOptionView subviews])
+    {
+        if([view isKindOfClass:[UIButton class]])
+        {
+            view.layer.cornerRadius=view.frame.size.width/2;
+            view.layer.borderWidth=2.0f;
+            view.layer.borderColor=[UIColor blackColor].CGColor;
+        }
+    }
+    
     notesNameArr=[[NSMutableArray alloc]init];
     [_tableView registerNib:[UINib nibWithNibName:@"InfoCEll" bundle:nil]  forCellReuseIdentifier:@"cell"];
-    
-    _notePageView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"swap.png"]];
-    _notesView.backgroundColor=_notePageView.backgroundColor;
+
     
     [_expandButton setBackgroundImage:[UIImage imageNamed:@"UNexpand.png"] forState:UIControlStateNormal];
     _noteTF.inputAccessoryView=self.keyBoardview;
@@ -37,6 +75,7 @@ static int totalNotes;
     _noteTF.delegate=self;
     _tableView.delegate=self;
     _tableView.dataSource=self;
+    _sliderView.transform= CGAffineTransformMakeRotation(-M_PI_2);
     // this is test for pull
     //swapnil push code to you
  
@@ -44,7 +83,6 @@ static int totalNotes;
 -(void)viewDidAppear:(BOOL)animated
 {
     
-    notesNameArr.count>0 ? _tblWidthConstraint.constant=277 : 0;
     [self.view layoutIfNeeded];
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -56,71 +94,148 @@ static int totalNotes;
     
    cell=(InfoCEll*)[tableView dequeueReusableCellWithIdentifier:@"cell"];
     
-    NSString *noteName=notesNameArr[indexPath.row];
+    NSString *noteName=@"";
+    if([notesNameArr[indexPath.row] isKindOfClass:[NSDictionary class]])
+    {
+         noteName=[notesNameArr[indexPath.row] valueForKey:@"noteName"];
+    }
+    else
+    {
+         noteName=notesNameArr[indexPath.row];
+    }
     cell.noteTitleLbl.text=noteName.length>24 ? [noteName substringToIndex:24] : noteName;
+    cell.backgroundColor=[UIColor clearColor];
     return cell;
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath: (NSIndexPath *)indexPath
 {
+   
+    isNewNoting=NO;
     selIndexPath=indexPath;
     cell=[_tableView cellForRowAtIndexPath:indexPath];
-    _noteTF.text=[notesNameArr[indexPath.row] isEqualToString:@"New note"] ? @"" : notesNameArr[indexPath.row];
+    if([notesNameArr[indexPath.row] isKindOfClass:[NSDictionary class]])
+    {
+        _noteTF.hidden=YES;
+        _baseImageView.hidden=NO;
+        _drawingView.hidden=NO;
+        [self ClearNoting:nil];
+        UIImage *noteImage=[UIImage imageWithData:[notesNameArr[indexPath.row] valueForKey:@"noteImage"]];
+        _noteTitle.text=[[notesNameArr[indexPath.row] valueForKey:@"noteName"] length] >30 ? [[notesNameArr[indexPath.row] valueForKey:@"noteName"]  substringToIndex:30] : [notesNameArr[indexPath.row] valueForKey:@"noteName"];
+        _baseImageView.image=noteImage;
+    }
+    else
+    {
+        _noteTF.hidden=NO;
+        _baseImageView.hidden=YES;
+        _drawingView.hidden=YES;
+        _drawingToolView.hidden=YES;
+        _noteTF.text=[notesNameArr[indexPath.row] isEqualToString:@"New note"] ? @"" : notesNameArr[indexPath.row];
+        _noteTitle.text=_noteTF.text.length>30 ? [_noteTF.text substringToIndex:30] : _noteTF.text;
+    }
+    [self expandBtnPressed:_expandButton];
+}
+- (UIImage *)ForRawImage:(UIImage*)freeHandImage
+{
+   
+    UIImage *image = self.drawingView.image;
+    
+    UIGraphicsBeginImageContext( freeHandImage.size );
+    CGRect imageFrame = CGRectMake(0.0f, 0.0f, freeHandImage.size.width, freeHandImage.size.height);
+    
+    // Use existing opacity as is
+    [freeHandImage drawInRect:imageFrame];
+    
+    // Apply supplied opacity
+    [image drawInRect:imageFrame blendMode:kCGBlendModeNormal alpha:0.8];
+    
+    UIImage *blendImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return blendImage;
+}
+- (void)HideShowTableView:(UIButton *)sender {
+    [UIView animateWithDuration:0.5 animations:^{
+        if([sender.currentBackgroundImage isEqual:[UIImage imageNamed:@"UNexpand.png"]])
+        {
+            [sender setBackgroundImage:[UIImage imageNamed:@"expand.png"] forState:UIControlStateNormal];
+            _tableviewXOrigin.constant=0;
+            isNotePreviewWindowOpened=YES;
+            [self.view layoutIfNeeded];
+            
+        }
+        else
+        {
+            [sender setBackgroundImage:[UIImage imageNamed:@"UNexpand.png"] forState:UIControlStateNormal];
+            _tableviewXOrigin.constant=tableXAxis;
+            isNotePreviewWindowOpened=NO;
+            [self.view layoutIfNeeded];
+            
+        }
+    }];
 }
 
 - (IBAction)expandBtnPressed:(UIButton *)sender
 {
+    [self.view endEditing:YES];
     if (notesNameArr.count>0)
     {
-        [UIView animateWithDuration:0.5 animations:^{
-            if([sender.currentBackgroundImage isEqual:[UIImage imageNamed:@"UNexpand.png"]])
-            {
-                [sender setBackgroundImage:[UIImage imageNamed:@"expand.png"] forState:UIControlStateNormal];
-                _tblWidthConstraint.constant=277;
-                isNotePreviewWindowOpened=YES;
-                [self.view layoutIfNeeded];
-                
-            }
-            else
-            {
-                [sender setBackgroundImage:[UIImage imageNamed:@"UNexpand.png"] forState:UIControlStateNormal];
-                _tblWidthConstraint.constant=0;
-                isNotePreviewWindowOpened=NO;
-                [self.view layoutIfNeeded];
-                
-            }
-        }];
+        [self HideShowTableView:_expandButton];
     }
     else
     {
-        UIAlertController *noNoteAlert = [UIAlertController alertControllerWithTitle:@"Preview Notes" message:@"There is no any saved notes to preview" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *ok=[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            [self dismissViewControllerAnimated:notesNameArr completion:nil];
-        }];
-        [noNoteAlert addAction:ok];
-        [self presentViewController:noNoteAlert animated:YES completion:nil];
+        if (sender!=nil)
+        {
+            NSString *alertMsg=@"";
+            if(sender==_expandButton)
+            {
+                alertMsg=@"There is no any saved notes to preview";
+            }
+            else if(sender==_DeleteBtn)
+            {
+                alertMsg=@"There is no any saved notes to delete";
+            }
+            
+            UIAlertController *noNoteAlert = [UIAlertController alertControllerWithTitle:@"Notes" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *ok=[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                [self dismissViewControllerAnimated:notesNameArr completion:nil];
+            }];
+            [noNoteAlert addAction:ok];
+            [self presentViewController:noNoteAlert animated:YES completion:nil];
+        }
     }
 }
 
 - (IBAction)makeNewNotePressed:(UIButton *)sender
 {
+    _noteTitle.text=@"";
+    [self ClearNoting:nil];
+    _baseImageView.hidden=YES;
+    _drawingView.hidden=YES;
+    _noteTF.hidden=NO;
     if(![notesNameArr containsObject:@"New note"]&&notesNameArr.count>0)
     {
         totalNotes +=1;
         [notesNameArr addObject:@"New note"];
-        if(notesNameArr.count==1&&!isNotePreviewWindowOpened)
-            [self expandBtnPressed:_expandButton];
-        
-        NSIndexPath* selectedCellIndexPath= [NSIndexPath indexPathForRow:totalNotes inSection:0];
+        [_expandButton setBackgroundImage:[UIImage imageNamed:@"expand.png"] forState:UIControlStateNormal];
+        NSIndexPath* selectedCellIndexPath= [NSIndexPath indexPathForRow:notesNameArr.count-1 inSection:0];
         [self tableView:_tableView didSelectRowAtIndexPath:selectedCellIndexPath];
         [_tableView selectRowAtIndexPath:selectedCellIndexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-        
+
         [_tableView reloadData];
     }
 }
-
+-(void)textViewDidBeginEditing:(UITextField *)textField {
+    if(_tableviewXOrigin.constant==0)
+    [self HideShowTableView:_expandButton];
+}
 -(BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    cell.noteTitleLbl.text=textView.text.length>24 ? [textView.text substringToIndex:24] : textView.text ;
+    
+    NSString *updatedStr = [textView.text stringByAppendingString:text];
+    cell.noteTitleLbl.text=updatedStr.length>24 ? [updatedStr substringToIndex:24] : updatedStr ;
+    _noteTitle.text=updatedStr.length>30 ? [updatedStr substringToIndex:30] : updatedStr;
+    
+        
     return YES;
 }
 
@@ -152,9 +267,7 @@ static int totalNotes;
                 [notesNameArr addObject:textView.text];
             }
         }
-        
-        if(notesNameArr.count==1&&!isNotePreviewWindowOpened)
-            [self expandBtnPressed:_expandButton];
+
         [_tableView reloadData];
     }
 }
@@ -163,39 +276,403 @@ static int totalNotes;
     [self.view endEditing:YES];
     [self.noteTF resignFirstResponder];
     if(notesNameArr.count==1&&!isNotePreviewWindowOpened)
-        [self expandBtnPressed:_expandButton];
+        [self HideShowTableView:_expandButton];
+//    if(_tableviewXOrigin.constant==0)
+//    {
+//        [self HideShowTableView:_expandButton];
+//    }
+    
+        if([notesNameArr containsObject:@"New note"])
+        {
+            NSInteger emptyNoteIndex=[notesNameArr indexOfObject:@"New note"];
+            if(NSNotFound == emptyNoteIndex) {
+                NSLog(@"not found");
+            }
+            else{
+                
+                NSLog(@"index of new note : %ld",(long)emptyNoteIndex);
+                [notesNameArr removeObjectAtIndex:emptyNoteIndex];
+            }
+        }
     [_tableView reloadData];
 
 }
-
+-(void)hideUnusedView:(BOOL)isShow
+{
+    _noteTF.hidden=!isShow;
+    _drawingView.hidden=isShow;
+    _baseImageView.hidden=isShow;
+}
 - (IBAction)DeleteNotesPressed:(UIButton *)sender
 {
+    if(notesNameArr.count==0)
+    {
+        _noteTF.text=@"";
+        _noteTitle.text=@"";
+        _baseImageView.image=nil;
+        [self ClearNoting:nil];
+        
+        [self expandBtnPressed:_DeleteBtn];
+        return;
+    }
+    [self.view endEditing:YES];
+    isDeleteClick=YES;
+    NSString *noteName=@"";
     if(selIndexPath.row>0)
-    { 
+    {
         [notesNameArr removeObjectAtIndex:selIndexPath.row];
-       
-         selIndexPath=[NSIndexPath indexPathForRow:selIndexPath.row-1 inSection:0];
-        _noteTF.text=notesNameArr[selIndexPath.row];
+        
+        selIndexPath=[NSIndexPath indexPathForRow:selIndexPath.row-1 inSection:0];
+        
+        if([notesNameArr[selIndexPath.row] isKindOfClass:[NSDictionary class]])
+        {
+            UIImage *noteImage=[UIImage imageWithData:[notesNameArr[selIndexPath.row] valueForKey:@"noteImage"]];
+            [self hideUnusedView:NO];
+            _baseImageView.image=nil;
+            _baseImageView.image=noteImage;
+            noteName=[notesNameArr[selIndexPath.row] valueForKey:@"noteName"];
+            
+        }
+        else
+        {
+            [self hideUnusedView:YES];
+            noteName=notesNameArr[selIndexPath.row];
+            _noteTF.text=noteName;
+        }
+        _noteTitle.text=noteName.length>30 ? [noteName substringToIndex:30] : noteName;
         [_tableView reloadData];
     }
     else
     {
         if(notesNameArr.count!=0)
         {
-         [notesNameArr removeObjectAtIndex:0];
+            [notesNameArr removeObjectAtIndex:0];
             if(notesNameArr.count==0)
             {
-                [UIView animateWithDuration:0.5 animations:^{
-                    [notesNameArr removeAllObjects];
-                   _noteTF.text=@"";
-                    [_expandButton setBackgroundImage:[UIImage imageNamed:@"UNexpand.png"] forState:UIControlStateNormal];
-                    _tblWidthConstraint.constant=0;
-                    isNotePreviewWindowOpened=NO;
-                    [self.view layoutIfNeeded];
-                }];
+                if(_tableviewXOrigin.constant==0)
+                 [self HideShowTableView:_expandButton];
+                _noteTF.text=@"";
+                _noteTitle.text=@"";
+                _baseImageView.image=nil;
+                [self ClearNoting:nil];
             }
-         [_tableView reloadData];
+            else
+            {
+                if([notesNameArr[0] isKindOfClass:[NSDictionary class]])
+                {
+                    UIImage *noteImage=[UIImage imageWithData:[notesNameArr[0] valueForKey:@"noteImage"]];
+                    [self hideUnusedView:NO];
+                    _baseImageView.image=nil;
+                    _baseImageView.image=noteImage;
+                    noteName=[notesNameArr[0] valueForKey:@"noteName"];
+                    
+                }
+                else
+                {
+                    [self hideUnusedView:YES];
+                    noteName=notesNameArr[0];
+                    _noteTF.text=noteName;
+                }
+                _noteTitle.text=noteName.length>30 ? [noteName substringToIndex:30] : noteName;
+            }
+            [_tableView reloadData];
+        }
+        
+    }
+}
+
+- (IBAction)setColorPressed:(UIButton *)sender
+{
+    [self openColorPannel];
+    switch (sender.tag)
+    {
+        case 0:
+             self.drawingView.lineColor=[UIColor blackColor];
+             break;
+            
+        case 1:
+            self.drawingView.lineColor=[UIColor brownColor];
+            break;
+           
+        case 2:
+           self.drawingView.lineColor=[UIColor blueColor];
+            
+            break;
+        case 3:
+            self.drawingView.lineColor=[UIColor redColor];
+            
+            break;
+        case 4:
+            self.drawingView.lineColor=[UIColor greenColor];
+            
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (IBAction)FreeHandDrawingPressed:(UIButton *)sender
+{
+    if(_tableviewXOrigin.constant==0)
+    {
+        [self HideShowTableView:_expandButton];
+    }
+    [self.view endEditing:YES];
+    _noteTitle.text=@"";
+    isNewNoting=YES;
+    _noteTF.hidden=YES;
+    [self ClearNoting:nil];
+    _drawingView.hidden=NO;
+   _drawingToolView.hidden=NO;
+
+}
+- (IBAction)ClearNoting:(UIButton *)sender
+{
+    if ([self.baseImageView image])
+    {
+        [self.baseImageView setImage:nil];
+        [self.drawingView setFrame:self.baseImageView.frame];
+    }
+    
+    [self.drawingView clear];
+}
+-(void)openColorPannel
+{
+    if(_sliderViewHeight.constant==178.0f)
+    {
+        [self openFontSize:nil];
+    }
+    [UIView animateWithDuration:0.5 animations:^{
+        if(_colorViewHeight.constant==0.0f)
+        {
+            _colorViewHeight.constant=160.0f;
+           for (NSLayoutConstraint *constraint in self.colorHeight)
+           {
+               constraint.constant=28;
+           }
+        }
+        else
+        {
+            _colorViewHeight.constant=0.0f;
+            for (NSLayoutConstraint *constraint in self.colorHeight)
+            {
+                constraint.constant=0;
+            }
+        }
+        [self.view layoutIfNeeded];
+    }];
+
+}
+- (IBAction)openColorPicker:(UIButton *)sender
+{
+    [self openColorPannel];
+}
+- (IBAction)openFontSize:(UIButton *)sender
+{
+    if(_colorViewHeight.constant==160.0f)
+    {
+        [self openColorPannel];
+    }
+    [UIView animateWithDuration:0.5 animations:^{
+        if(_sliderViewHeight.constant==0.0f)
+        {
+            _sliderViewHeight.constant=178.0f;
+             _sizeSlider.hidden=NO;
+        }
+        else
+        {
+            _sliderViewHeight.constant=0.0f;
+             _sizeSlider.hidden=YES;
+        }
+        [self.view layoutIfNeeded];
+       
+    }];
+    //fontSizeViewOpened = !fontSizeViewOpened;
+}
+- (IBAction)sliderFontValue:(UISlider *)sender
+{
+    //self.drawingView.lineWidth=sender.value;//*7.5+7.5;
+    
+    // This determines which "step" the slider should be on. Here we're taking
+    //   the current position of the slider and dividing by the `self.stepValue`
+    //   to determine approximately which step we are on. Then we round to get to
+    //   find which step we are closest to.
+    float newStep = roundf((_sizeSlider.value) / sliderStepValue);
+    
+    // Convert "steps" back to the context of the sliders values.
+    _sizeSlider.value = newStep > 1 ? newStep * sliderStepValue : newStep;
+    self.drawingView.lineWidth=newStep * sliderStepValue;
+    
+    
+}
+
+-(void)CaptureAndSaveNotingWithName:(NSString*)noteTitle
+{
+    //Get the size of the screen
+    CGRect screenRect = [_captureView frame];
+    
+    //Create a bitmap-based graphics context and make
+    //it the current context passing in the screen size
+    UIGraphicsBeginImageContext(screenRect.size);
+    
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    [[UIColor blackColor] set];
+    CGContextFillRect(ctx, screenRect);
+    [_captureView.layer renderInContext:ctx];
+    UIImage *newImage =UIGraphicsGetImageFromCurrentImageContext();
+    
+     [self.drawingView clear];
+    _baseImageView.hidden=NO;
+     [self.baseImageView setImage:newImage];
+   
+    //End the bitmap-based graphics context
+    UIGraphicsEndImageContext();
+    NSData* noteData = UIImagePNGRepresentation(newImage);
+    NSDictionary *picInfo = @{@"noteName":noteTitle,@"noteImage":noteData}.mutableCopy;
+    if(isNewNoting)
+    {
+     [notesNameArr addObject:picInfo];
+    }
+    else
+    {
+     [notesNameArr replaceObjectAtIndex:selIndexPath.row  withObject:picInfo];
+    }
+    [_tableView reloadData];
+    _noteTitle.text=noteTitle.length>30 ? [noteTitle substringToIndex:30] : noteTitle;
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Note" message:@"Note saved successfully" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    [alert show];
+    
+}
+- (IBAction)saveFreeHandNote:(UIButton *)sender
+{
+    if(isNewNoting)
+    {
+        UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"save" message: @"Enter title for note" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField)
+         {
+             textField.placeholder = @"Enter title...";
+             textField.textColor = [UIColor blackColor];
+             textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+             textField.borderStyle = UITextBorderStyleRoundedRect;
+         }];
+        
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            NSArray * textfields = alertController.textFields;
+            UITextField * notetitle = textfields[0];
+            if([notetitle.text stringByReplacingOccurrencesOfString:@" " withString:@""].length==0)
+            {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Save Note" message:@"Noting Title cannot be blank" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                [alert show];
+            }
+            else
+            {
+                [self CaptureAndSaveNotingWithName:notetitle.text];
+               // [self ClearNoting:nil];
+                NSLog(@"%@",notetitle.text);
+            }
+            
+        }]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+    else
+    {
+        [self CaptureAndSaveNotingWithName:[notesNameArr[selIndexPath.row] valueForKey:@"noteName"]];
+        
+    
+    }
+    _drawingToolView.hidden=YES;
+}
+#pragma mark - ACEDrawing View Delegate
+
+- (void)drawingView:(ACEDrawingView *)view didEndDrawUsingTool:(id<ACEDrawingTool>)tool;
+{
+    //[self updateButtonStatus];
+}
+- (IBAction)UndoAction:(UIButton *)sender {
+    [self.drawingView undoLatestStep];
+}
+- (IBAction)redoAction:(UIButton *)sender {
+    [self.drawingView redoLatestStep];
+}
+- (void)drawingView:(ACEDrawingView *)view willBeginDrawUsingTool:(id<ACEDrawingTool>)tool
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        _colorViewHeight.constant=0.0f;
+        for (NSLayoutConstraint *constraint in self.colorHeight)
+        {
+            constraint.constant=0;
+        }
+        _sliderViewHeight.constant=0.0f;
+        _sizeSlider.hidden=YES;
+        _drawingToolView.hidden=NO;
+        [self.view layoutIfNeeded];
+    }];
+    if(_tableviewXOrigin.constant==0)
+    [self HideShowTableView:_expandButton];
+    
+    
+}
+- (IBAction)CancelFreeHandeEditing:(UIButton *)sender
+{
+    _drawingToolView.hidden=YES;
+    if (isNewNoting)
+    {
+     [self ClearNoting:nil];
+    }
+    else
+    {
+        [self ClearNoting:nil];
+        _baseImageView.image=[UIImage imageWithData:[notesNameArr[selIndexPath.row] valueForKey:@"noteImage"]];
+      
+    }
+   
+}
+- (IBAction)ChooseToolsPressed:(UIButton *)sender
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Select a tool" delegate:self                                                    cancelButtonTitle:@"Cancel"                                               destructiveButtonTitle:nil                                                    otherButtonTitles:@"Pen", @"Line", @"Arrow",@"Rect (Stroke)", @"Rect (Fill)",@"Ellipse (Stroke)", @"Ellipse (Fill)",nil];
+    
+    [actionSheet showInView:self.view];
+}
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (actionSheet.cancelButtonIndex != buttonIndex)
+    {
+        switch (buttonIndex) {
+            case 0:
+                self.drawingView.drawTool = ACEDrawingToolTypePen;                    break;
+            case 1:
+                self.drawingView.drawTool = ACEDrawingToolTypeLine;                    break;
+            case 2:
+                self.drawingView.drawTool = ACEDrawingToolTypeArrow;                    break;
+            case 3:
+                self.drawingView.drawTool = ACEDrawingToolTypeRectagleStroke;                    break;
+            case 4:
+                self.drawingView.drawTool = ACEDrawingToolTypeRectagleFill;                    break;
+            case 5:
+                self.drawingView.drawTool = ACEDrawingToolTypeEllipseStroke;                    break;
+            case 6:
+                self.drawingView.drawTool = ACEDrawingToolTypeEllipseFill;                    break;
+           
         }
     }
+}
+- (IBAction)imageChange:(id)sender
+{
+    UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.sourceType = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] ? UIImagePickerControllerSourceTypeCamera : UIImagePickerControllerSourceTypePhotoLibrary;
+    imagePicker.delegate = self;
+    [self presentViewController:imagePicker animated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary*)info
+{
+    [self.drawingView clear];
+   // [self updateButtonStatus];
+    
+    UIImage* image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    [self.baseImageView setImage:image];
+   // [self.drawingView setFrame:AVMakeRectWithAspectRatioInsideRect(image.size, self.baseImageView.frame)];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end
