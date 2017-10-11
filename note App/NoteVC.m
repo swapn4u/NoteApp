@@ -35,10 +35,8 @@ static int totalNotes;
 {
     [super viewDidLoad];
     
- 
-    
     [_notesView DefaultShadow];
-    [_expandBtnView DefaultShadow];
+    [_expandBtnView addDropShadow:[UIColor blackColor] withOffset:CGSizeMake(0,1) radius:1 opacity:1];
     
     lastQuestionStep = (self.sizeSlider.value) /sliderStepValue;
     
@@ -50,8 +48,6 @@ static int totalNotes;
     _sizeSlider.hidden=YES;
     
     _drawingToolView.hidden=YES;
-    
-    
     
      self.drawingView.delegate = self;
     for (UIView *view in [_colorOptionView subviews])
@@ -76,8 +72,7 @@ static int totalNotes;
     _tableView.delegate=self;
     _tableView.dataSource=self;
     _sliderView.transform= CGAffineTransformMakeRotation(-M_PI_2);
-    // this is test for pull
-    //swapnil push code to you
+
  
 }
 -(void)viewDidAppear:(BOOL)animated
@@ -153,8 +148,23 @@ static int totalNotes;
     
     return blendImage;
 }
+-(void)AnimateButtonWithRotation
+{
+    CABasicAnimation* rotationAnimation;
+    rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    if(isNotePreviewWindowOpened)
+    rotationAnimation.toValue = [NSNumber numberWithFloat: M_PI * 2.0  * 0.5 * 0.5 ];
+    else
+    rotationAnimation.toValue = [NSNumber numberWithFloat: -(M_PI * 2.0  * 0.5 * 0.5 )];
+    rotationAnimation.duration = 0.5;
+    rotationAnimation.cumulative = YES;
+    rotationAnimation.repeatCount = 0;//repeat ? HUGE_VALF : 0;
+    
+    [_expandButton.layer addAnimation:rotationAnimation forKey:@"rotationAnimation"];
+}
 - (void)HideShowTableView:(UIButton *)sender {
     [UIView animateWithDuration:0.5 animations:^{
+        
         if([sender.currentBackgroundImage isEqual:[UIImage imageNamed:@"UNexpand.png"]])
         {
             [sender setBackgroundImage:[UIImage imageNamed:@"expand.png"] forState:UIControlStateNormal];
@@ -171,6 +181,7 @@ static int totalNotes;
             [self.view layoutIfNeeded];
             
         }
+        [self  AnimateButtonWithRotation];
     }];
 }
 
@@ -275,12 +286,12 @@ static int totalNotes;
 {
     [self.view endEditing:YES];
     [self.noteTF resignFirstResponder];
-    if(notesNameArr.count==1&&!isNotePreviewWindowOpened)
-        [self HideShowTableView:_expandButton];
-//    if(_tableviewXOrigin.constant==0)
-//    {
+//    if(notesNameArr.count==1&&!isNotePreviewWindowOpened)
 //        [self HideShowTableView:_expandButton];
-//    }
+    if(_tableviewXOrigin.constant==0)
+    {
+        [self HideShowTableView:_expandButton];
+    }
     
         if([notesNameArr containsObject:@"New note"])
         {
@@ -296,6 +307,10 @@ static int totalNotes;
         }
     [_tableView reloadData];
 
+}
+-(UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 -(void)hideUnusedView:(BOOL)isShow
 {
@@ -659,20 +674,44 @@ static int totalNotes;
 - (IBAction)imageChange:(id)sender
 {
     UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
-    imagePicker.sourceType = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] ? UIImagePickerControllerSourceTypeCamera : UIImagePickerControllerSourceTypePhotoLibrary;
     imagePicker.delegate = self;
-    [self presentViewController:imagePicker animated:YES completion:nil];
+    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera])
+    {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Add Image" message:@"Choose media for proceed :"                                                                 preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* FromCamera = [UIAlertAction actionWithTitle:@"Camera" style:UIAlertActionStyleDefault                                                              handler:^(UIAlertAction * action)
+                                     {
+                                         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera ;
+                                          [self presentViewController:imagePicker animated:YES completion:nil];
+                                     }];
+        UIAlertAction* fromGallery = [UIAlertAction actionWithTitle:@"Gallery" style:UIAlertActionStyleDefault                                                              handler:^(UIAlertAction * action)
+                                      {
+                                          imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                                           [self presentViewController:imagePicker animated:YES completion:nil];
+                                      }];
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive                                                              handler:^(UIAlertAction * action)
+                                      {
+                                          
+                                      }];
+        
+        [alert addAction:FromCamera];
+        [alert addAction:fromGallery];
+        [alert addAction:cancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+    else
+    {
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary ;
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }
+   
 }
 
 - (void)imagePickerController:(UIImagePickerController*)picker didFinishPickingMediaWithInfo:(NSDictionary*)info
 {
     [self.drawingView clear];
-   // [self updateButtonStatus];
-    
     UIImage* image = [info objectForKey:UIImagePickerControllerOriginalImage];
     [self.baseImageView setImage:image];
-   // [self.drawingView setFrame:AVMakeRectWithAspectRatioInsideRect(image.size, self.baseImageView.frame)];
-    
+ 
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 @end

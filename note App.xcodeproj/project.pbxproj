@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E91CA9771F0A5310005A72FA /* swap.png in Resources */ = {isa = PBXBuildFile; fileRef = E91CA9761F0A5310005A72FA /* swap.png */; };
 		E93393C31F062D2800CBD781 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E93393C21F062D2700CBD781 /* main.m */; };
 		E93393C61F062D2800CBD781 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E93393C51F062D2800CBD781 /* AppDelegate.m */; };
 		E93393CE1F062D2800CBD781 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E93393CD1F062D2800CBD781 /* Assets.xcassets */; };
@@ -24,7 +23,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E91CA9761F0A5310005A72FA /* swap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = swap.png; sourceTree = "<group>"; };
 		E93393BE1F062D2700CBD781 /* note App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "note App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93393C21F062D2700CBD781 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E93393C41F062D2800CBD781 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -80,22 +78,9 @@
 		E93393C01F062D2700CBD781 /* note App */ = {
 			isa = PBXGroup;
 			children = (
-				E96358521F839B2200E2A5B6 /* ACEDrawingLabelView.h */,
-				E96358531F839B2200E2A5B6 /* ACEDrawingLabelView.m */,
-				E96358501F839B2100E2A5B6 /* ACEDrawingTools.h */,
-				E96358551F839B2200E2A5B6 /* ACEDrawingTools.m */,
-				E96358561F839B2300E2A5B6 /* ACEDrawingToolState.h */,
-				E96358541F839B2200E2A5B6 /* ACEDrawingToolState.m */,
-				E96358571F839B2300E2A5B6 /* ACEDrawingView.h */,
-				E96358511F839B2200E2A5B6 /* ACEDrawingView.m */,
-				E93393ED1F0679BE00CBD781 /* IMAGES */,
-				E96B0A5D1F878FDC00532F9F /* UIView+DropShadow.h */,
-				E96B0A5E1F878FDC00532F9F /* UIView+DropShadow.m */,
-				E93393D81F062DA600CBD781 /* NoteVC.h */,
-				E93393D91F062DA600CBD781 /* NoteVC.m */,
-				E93393DA1F062DA600CBD781 /* NoteVC.xib */,
-				E93393C41F062D2800CBD781 /* AppDelegate.h */,
-				E93393C51F062D2800CBD781 /* AppDelegate.m */,
+				E964ADA11F87B112003D1555 /* Drawing Framework */,
+				E964ADA21F87B135003D1555 /* Supporting Files */,
+				E964ADA41F87B182003D1555 /* working Area */,
 				E93393CD1F062D2800CBD781 /* Assets.xcassets */,
 				E93393CF1F062D2800CBD781 /* LaunchScreen.storyboard */,
 				E93393D21F062D2800CBD781 /* Info.plist */,
@@ -115,12 +100,40 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E93393ED1F0679BE00CBD781 /* IMAGES */ = {
+		E964ADA11F87B112003D1555 /* Drawing Framework */ = {
 			isa = PBXGroup;
 			children = (
-				E91CA9761F0A5310005A72FA /* swap.png */,
+				E96358521F839B2200E2A5B6 /* ACEDrawingLabelView.h */,
+				E96358531F839B2200E2A5B6 /* ACEDrawingLabelView.m */,
+				E96358501F839B2100E2A5B6 /* ACEDrawingTools.h */,
+				E96358551F839B2200E2A5B6 /* ACEDrawingTools.m */,
+				E96358561F839B2300E2A5B6 /* ACEDrawingToolState.h */,
+				E96358541F839B2200E2A5B6 /* ACEDrawingToolState.m */,
+				E96358571F839B2300E2A5B6 /* ACEDrawingView.h */,
+				E96358511F839B2200E2A5B6 /* ACEDrawingView.m */,
 			);
-			name = IMAGES;
+			name = "Drawing Framework";
+			sourceTree = "<group>";
+		};
+		E964ADA21F87B135003D1555 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E96B0A5D1F878FDC00532F9F /* UIView+DropShadow.h */,
+				E96B0A5E1F878FDC00532F9F /* UIView+DropShadow.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E964ADA41F87B182003D1555 /* working Area */ = {
+			isa = PBXGroup;
+			children = (
+				E93393C41F062D2800CBD781 /* AppDelegate.h */,
+				E93393C51F062D2800CBD781 /* AppDelegate.m */,
+				E93393D81F062DA600CBD781 /* NoteVC.h */,
+				E93393D91F062DA600CBD781 /* NoteVC.m */,
+				E93393DA1F062DA600CBD781 /* NoteVC.xib */,
+			);
+			name = "working Area";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,7 +195,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E91CA9771F0A5310005A72FA /* swap.png in Resources */,
 				E93393D11F062D2800CBD781 /* LaunchScreen.storyboard in Resources */,
 				E93393E11F06422700CBD781 /* InfoCEll.xib in Resources */,
 				E93393CE1F062D2800CBD781 /* Assets.xcassets in Resources */,
@@ -244,9 +256,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: prathamesh.navghare@wwindia.com (4HQHR75CVV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: prathamesh.navghare@wwindia.com (4HQHR75CVV)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 89B4WLNWVT;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -266,6 +280,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "78a76de6-e2f9-49fc-b238-b9270fd80b21";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -292,9 +307,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: prathamesh.navghare@wwindia.com (4HQHR75CVV)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: prathamesh.navghare@wwindia.com (4HQHR75CVV)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 89B4WLNWVT;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -307,6 +324,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "78a76de6-e2f9-49fc-b238-b9270fd80b21";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -319,8 +337,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 9LF24P7WQU;
 				INFOPLIST_FILE = "note App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.neosofttech.note-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -335,8 +355,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Neosoft Technologies (9LF24P7WQU)";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 9LF24P7WQU;
 				INFOPLIST_FILE = "note App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.neosofttech.note-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
